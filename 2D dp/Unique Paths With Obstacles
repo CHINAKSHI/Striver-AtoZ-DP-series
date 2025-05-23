@@ -1,0 +1,38 @@
+//Space optimization
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector<vector<int>>& a) {
+        int m=a.size();//row
+        int n=a[0].size();//col
+        vector<int> pre(n,0);
+        pre[0]=1;
+
+        for(int i=0;i<m;i++){
+            vector<int> cur(n,0);
+            for(int j=0;j<n;j++){
+                if(i==0 && j==0 && a[0][0]!=1){
+                    cur[0]=1;
+                } 
+                else{
+                    int up, left;
+
+                    if (a[i][j] == 1) {
+                    cur[j] = 0; // Cannot go through obstacle
+                    continue; //skips the code below it for j  and jumps to (j++).
+                    }
+                     
+                    if(i>0) {up=pre[j];}
+                    else{up=0;}
+
+                    if(j>0){ left=cur[j-1];}
+                    else{ left=0;}
+                    
+                    cur[j]=up+left;
+                }
+            }
+            pre=cur;
+        }
+        return pre[n-1];
+        
+    }
+};
