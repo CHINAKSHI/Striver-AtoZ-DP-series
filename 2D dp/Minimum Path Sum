@@ -1,0 +1,32 @@
+//Space optimization
+class Solution {
+public:
+    int minPathSum(vector<vector<int>>& a) {
+        int m = a.size();//row
+        int n = a[0].size();//col
+        vector<int> pre(n,0);
+        pre[0]=a[0][0];
+
+        for(int i=0;i<m;i++){
+            vector<int> cur(n,0);
+            for(int j=0;j<n;j++){
+                if(i==0 && j==0){
+                    cur[0]=a[0][0];
+                } 
+                else{
+                    int up, left;
+                     
+                    if(i>0) {up=a[i][j]+pre[j];}
+                    else{up=1e9;}
+
+                    if(j>0){ left=a[i][j]+cur[j-1];}
+                    else{ left=1e9;}
+                    
+                    cur[j]=min(up,left);
+                }
+            }
+            pre=cur;
+        }
+        return pre[n-1];
+    }
+};
