@@ -1,0 +1,80 @@
+//Recursion
+class Solution {
+private:
+    int f(int ind, vector<int>& a) {
+        if (ind == 0) return a[ind];
+        if (ind < 0) return 0;
+
+        int notpick = f(ind - 1, a);
+        int pick = a[ind] + f(ind - 2, a);
+        return max(pick, notpick);
+    }
+
+
+public:
+    int rob(vector<int>& a) {
+        int n = a.size();
+        return f(n - 1, a);
+    }
+};
+
+//Memoization
+class Solution {
+private:
+    int f(int ind, vector<int>& a, vector<int>& dp){
+        if(ind==0){return a[ind];}
+        if(ind<0){return 0;}
+        if(dp[ind]!=-1){return dp[ind];}
+
+        int notpick=0+f(ind-1,a, dp);
+        int pick=a[ind]+f(ind-2,a, dp);
+        return dp[ind]=max(pick,notpick);
+    }
+public:
+    int rob(vector<int>& a) {
+        int n=a.size();
+        vector<int> dp(n,-1);
+        return f(n-1,a,dp);
+        
+    }
+};
+
+
+//Tabulation
+class Solution {
+
+public:
+    int rob(vector<int>& a) {
+        int n=a.size();
+        vector<int> dp(n,-1);
+        dp[0]=a[0];
+        for(int i=1;i<n;i++){
+            int notpick=0+dp[i-1];
+            int pick=a[i];
+            if(i>1) pick+=dp[i-2];
+            dp[i]=max(pick,notpick);
+        }
+        return dp[n-1];       
+    }
+};
+
+
+//Space Optimization
+class Solution {
+
+public:
+    int rob(vector<int>& a) {
+        int n=a.size();
+        int pre2=0;
+        int pre=a[0];
+        
+        for(int i=1;i<n;i++){
+            int notpick=0+pre;
+            int pick=a[i];
+            if(i>1) pick+=pre2;
+            pre2=pre;
+            pre=max(pick,notpick);
+        }
+        return pre;       
+    }
+};
