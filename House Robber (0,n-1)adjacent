@@ -1,0 +1,30 @@
+//Space optimization
+
+class Solution {
+    private:
+     int f(vector<int>& a,int n ){
+        int pre=a[0];
+        int pre2=0;       
+        for(int i=1;i<n;i++){
+            int pick=a[i]+pre2;
+            int notpick=0+pre; 
+            pre2=pre;
+            pre =max(pick, notpick);
+        }
+        return pre; 
+    }
+public:
+    int rob(vector<int>& a) {
+        int n=a.size();
+
+        //edge case if empty string
+        if (n == 1) return a[0];
+
+        vector<int> t1,t2;
+        for(int i=0; i<n;i++){
+            if(i!=0) t1.push_back(a[i]);//include last
+            if(i!=n-1) t2.push_back(a[i]); //include first
+        }
+        return max(f(t1, t1.size()),f(t2, t2.size()));
+    }
+};
