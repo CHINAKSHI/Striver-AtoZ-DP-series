@@ -1,69 +1,118 @@
+//Recursion
+class Solution {
+public:
+    bool f(int i, int target,vector<int>& a){
+        if(target==0){return true;}
+        if (i==0) return (a[0]==target);
 
-#include <bits/stdc++.h>
-using namespace std;
+        bool nottake=0+f(i-1,target,a);
+        bool take =false;
+        if(target>=a[i]) take =f(i-1,target-a[i],a);
 
-// Function to check if it's possible to partition the array into two subsets with equal sum
-bool canPartition(int n, vector<int>& arr) {
-    int totSum = 0;
-
-    // Calculate the total sum of the array
-    for (int i = 0; i < n; i++) {
-        totSum += arr[i];
+        return take || nottake;
     }
-
-    // If the total sum is odd, it cannot be partitioned into two equal subsets
-    if (totSum % 2 == 1)
-        return false;
-    else {
-        int k = totSum / 2;
-
-        // Create a vector to represent the previous row of the DP table
-        vector<bool> prev(k + 1, false);
-
-        // Base case: If the target sum is 0, it can be achieved by not selecting any elements
-        prev[0] = true;
-
-        // Initialize the first row based on the first element of the array
-        if (arr[0] <= k)
-            prev[arr[0]] = true;
-
-        // Fill in the DP table using a bottom-up approach
-        for (int ind = 1; ind < n; ind++) {
-            // Create a vector to represent the current row of the DP table
-            vector<bool> cur(k + 1, false);
-            cur[0] = true;
-
-            for (int target = 1; target <= k; target++) {
-                // Exclude the current element
-                bool notTaken = prev[target];
-
-                // Include the current element if it doesn't exceed the target
-                bool taken = false;
-                if (arr[ind] <= target)
-                    taken = prev[target - arr[ind]];
-
-                // Update the current row of the DP table
-                cur[target] = notTaken || taken;
-            }
-
-            // Set the current row as the previous row for the next iteration
-            prev = cur;
+    bool canPartition(vector<int>& a) {
+        int sum=0;
+        int n=a.size();
+        for(int i=0;i<n;i++){
+            sum+=a[i];
         }
-
-        // The final result is in the last cell of the previous row of the DP table
-        return prev[k];
+        if(sum%2==1) return false;
+        int target = sum/2;
+        return f(n-1, target ,a);
     }
-}
+};
 
-int main() {
-    vector<int> arr = {2, 3, 3, 3, 4, 5};
-    int n = arr.size();
+//Memoization
+class Solution {
+public:
+    bool f(int i, int target,vector<int>& a, vector<vector<int>> &dp){
+        if(target==0){return true;}
+        if (i==0) return (a[0]==target);
+        if(dp[i][target]!=-1) return dp[i][target];
 
-    if (canPartition(n, arr))
-        cout << "The Array can be partitioned into two equal subsets";
-    else
-        cout << "The Array cannot be partitioned into two equal subsets";
+        bool nottake=0+f(i-1,target,a,dp);
+        bool take =false;
+        if(target>=a[i]) take =f(i-1,target-a[i],a,dp);
 
-    return 0;
-}
+        return dp[i][target]=take || nottake;
+    }
+    bool canPartition(vector<int>& a) {
+        int sum=0;
+        int n=a.size();
 
+        for(int i=0;i<n;i++){
+            sum+=a[i];
+        }
+        if(sum%2==1) return false;
+        int target = sum/2;
+
+        vector<vector<int>> dp(n, vector<int>(target + 1, -1));
+        return f(n-1, target ,a, dp);
+    }
+};
+
+//Tabulation
+class Solution {
+public:
+    bool canPartition(vector<int>& a) {
+        int sum=0;
+        int n=a.size();
+
+        for(int i=0;i<n;i++){
+            sum+=a[i];
+        }
+        if(sum%2==1) return false;
+        int target = sum/2;
+
+        vector<vector<bool>> dp(n, vector<bool>(target + 1, false));
+        if(target==0){return true;}
+        for(int j=0;j<target + 1;j++){
+            dp[0][a[0]]=true;
+            
+        }
+        for(int i=1;i<n;i++){
+            for(int j=0;j<target+1;j++){
+                bool nottake=0+dp[i-1][j];
+                bool take =false;
+                if(j>=a[i]) take =dp[i-1][j-a[i]];
+
+                dp[i][j]=take || nottake;
+            }
+        }
+        return dp[n-1][target];
+    }
+};
+
+//space optimization
+class Solution {
+public:
+    bool canPartition(vector<int>& a) {
+        int sum=0;
+        int n=a.size();
+
+        for(int i=0;i<n;i++){
+            sum+=a[i];
+        }
+        if(sum%2==1) return false;
+        int target = sum/2;
+
+        vector<bool> pre(target + 1,0), cur(target + 1,0);
+        if(target==0){return true;}
+        for(int j=0;j<target + 1;j++){
+            pre[a[0]]=true;
+            
+        }
+        for(int i=1;i<n;i++){
+            for(int j=0;j<target+1;j++){
+                bool nottake=0+pre[j];
+                bool take =false;
+                if(j>=a[i]) take =pre[j-a[i]];
+
+                cur[j]=take || nottake;
+            }
+            pre=cur;
+        }
+        return pre[target];
+    }
+};
