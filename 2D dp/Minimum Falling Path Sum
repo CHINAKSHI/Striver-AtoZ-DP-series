@@ -52,18 +52,6 @@ public:
 //Tabulation
 class Solution {
 public:
-    int f(int i, int j,int n, int m, vector<vector<int>>& a,vector<vector<int>> &dp){
-        if(j<0||j>=m) return 1e9;
-        if(i==0)return a[0][j];
-        if(dp[i][j]!=-1) return dp[i][j];
-
-        int upleft=a[i][j] +f(i-1,j-1,n,m,a, dp);
-        int up=a[i][j] +f(i-1,j,n,m,a, dp);
-        int upright=a[i][j] +f(i-1,j+1,n,m,a, dp);
-
-        dp[i][j]=min(upleft,min(up,upright));
-        return dp[i][j];
-    }
     int minFallingPathSum(vector<vector<int>>& a) {
         int n=a.size();
         int m=a[0].size();
@@ -99,18 +87,6 @@ public:
 //Space optimization
 class Solution {
 public:
-    int f(int i, int j,int n, int m, vector<vector<int>>& a,vector<vector<int>> &dp){
-        if(j<0||j>=m) return 1e9;
-        if(i==0)return a[0][j];
-        if(dp[i][j]!=-1) return dp[i][j];
-
-        int upleft=a[i][j] +f(i-1,j-1,n,m,a, dp);
-        int up=a[i][j] +f(i-1,j,n,m,a, dp);
-        int upright=a[i][j] +f(i-1,j+1,n,m,a, dp);
-
-        dp[i][j]=min(upleft,min(up,upright));
-        return dp[i][j];
-    }
     int minFallingPathSum(vector<vector<int>>& a) {
         int n=a.size();
         int m=a[0].size();
