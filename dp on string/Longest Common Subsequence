@@ -76,10 +76,6 @@ int longestCommonSubsequence(string s1, string s2) {
         int m=s2.size();
         vector<int> pre(m+1,0) ;
 
-        for(int j=0;j<m;j++){
-            pre[j]=0;
-        }
-
         for(int i=1;i<=n;i++){
             vector<int> cur(m+1,0);
             cur[0]=0;
