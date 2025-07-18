@@ -1,0 +1,87 @@
+class Solution {
+public:
+    int f(int i, int t, vector<int>& a){
+        if(t<0) return 0;
+        if(t==0) return 1;
+        if(i<0) return 0;
+
+        int take=0;
+        if(a[i]<=t) take = f(i, t-a[i],a);
+        int nottake =f(i-1,t,a);
+
+        return take+nottake;
+    }
+    int change(int amount, vector<int>& coins) {
+        int n=coins.size();
+        return f(n-1, amount, coins);
+    }
+};
+
+//Memo
+class Solution {
+public:
+    int f(int i, int t, vector<int>& a, vector<vector<int>> &dp){
+        if(t==0) return 1;
+        if(i==0) return 0;
+        if(dp[i][t]!=-1) return dp[i][t];
+
+        int take=0;
+        if(a[i-1]<=t) take = f(i, t-a[i-1],a, dp);
+        int nottake =f(i-1,t,a, dp);
+
+
+        return dp[i][t]=take+nottake;
+    }
+    int change(int amount, vector<int>& coins) {
+        int n=coins.size();
+        vector<vector<int>> dp(n+1, vector<int> (amount+1,-1));
+        return f(n, amount, coins, dp);
+
+    }
+};
+
+//Tabulation
+int change(int amount, vector<int>& coins) {
+        int n=coins.size();
+        vector<vector<int>> dp(n+1, vector<int> (amount+1,-1));
+
+        for(int i=0;i<=n;i++){
+            dp[i][0]=1;
+        }
+        for(int j=0;j<=amount;j++){
+            dp[0][j]=0;
+        }
+
+        for(int i=1;i<=n;i++){
+            for(int t=1;t<=amount;t++){
+                int take=0;
+                if(coins[i-1]<=t) take = dp[i][t-coins[i-1]];
+                int nottake =dp[i-1][t];
+                dp[i][t]=take+nottake;
+            }
+        }
+        return dp[n][amount];
+    }
+
+//Space optimization
+int change(int amount, vector<int>& coins) {
+        int n=coins.size();
+        vector<int> pre(amount + 1,0), cur(amount+1,0);
+        pre[0]=1;
+        
+        for(int j=0;j<=amount;j++){
+            pre[j]=0;
+        }
+
+        for(int i=1;i<=n;i++){
+            for(int t=1;t<=amount;t++){
+                int take=0;
+                if(coins[i-1]<=t) take = cur[t-coins[i-1]];
+                int nottake =pre[t];
+                cur[t]=take+nottake;
+            }
+            pre=cur;
+        }
+        return pre[amount];
+    }
+ye glt h
